@@ -44,7 +44,7 @@ That's it, you're done. You can now start the dev server by running `yarn dev`.
 yarn add -D eslint prettier eslint-config-prettier
 ```
 
-## 1.3 eslint & prettier configuration
+### 1.3 eslint & prettier configuration
 run following commands to create a .eslintrc.js file
 ```bash
 $ yarn eslint --init
@@ -133,11 +133,86 @@ Add the following lines in the `package.json` file:
 Now you can run `yarn lint` to check your code style and `yarn lint:fix` to fix some minor issues. You can also run `yarn format` to format your code.
 
 
-1.2 Backend
--make a backend folder
--yarn init -y
--eslint & prettier settings (a little different from FE)
--install dependencies
--Typescript setup
--create an entry point
--Add scripts to package.json
+### 2. Backend
+### 2.1 make a backend folder
+```bash
+mkdir backend
+cd backend
+yarn init -y
+```
+### 2.2 install dependencies
+```bash
+yarn add express cors mongoose dotenv body-parser
+```
+
+### 2.3 eslint & prettier settings (a little different from FE)
+The eslint setup step are similar to the frontend setup. The only difference is that you should answer the questions differently when running `yarn eslint --init`
+```bash
+$ yarn eslint --init
+You can also run this command directly using 'npm init @eslint/config'.
+? How would you like to use ESLint? …
+  To check syntax only
+❯ To check syntax and find problems # choose this one
+  To check syntax, find problems, and enforce code style
+? What type of modules does your project use? …
+❯ JavaScript modules (import/export) # choose this one
+  CommonJS (require/exports)
+  None of these
+? Which framework does your project use? …
+❯ React # choose this one
+  Vue.js
+❯ None of these
+? Does your project use TypeScript? › No / Yes # choose Yes
+? What format do you want your config file to be in? …
+❯ JavaScript # choose this one
+  YAML
+  JSON
+? Where does your code run? …  (Press <space> to select, <a> to toggle all, <i> to invert selection)
+✔ Browser
+✔ Node # select this one
+```
+The prettier setup for backend is different from that of the frontend package. Follow the steps below to setup prettier for backend. We will use `@trivago/prettier-plugin-sort-imports` to sort imports.
+#### 2.3.1 Install prettier and "@trivago/prettier-plugin-sort-imports"
+```bash
+yarn add -D prettier @trivago/prettier-plugin-sort-imports
+```
+#### 2.3.2 Create a `.prettierrc.cjs` file in your project directory and add the following lines:
+```json
+module.exports = {
+  plugins: [require.resolve("@trivago/prettier-plugin-sort-imports")],
+  importOrder: [
+    "^react",
+    "^next",
+    "<THIRD_PARTY_MODULES>",
+    "^@w+\\w",
+    "^@\\w",
+    "^./",
+  ],
+  importOrderSeparation: true,
+};
+```
+### 2.4 Typescript setup
+```bash
+yarn add -D ts-node typescript @types/cors @types/node @types/express
+```
+`-D` flag means that the package is a dev dependency. It is only used during development and not in production.
+Then we create a tsconfig.json file
+```bash
+yarn tsc --init
+```
+
+### 2.5 create an entry point
+```bash
+mkdir src
+touch src/index.ts
+```
+
+### 2.6 Add scripts to package.json
+```json
+"scripts": {
+  "dev": "nodemon src/index.ts",
+  "start": "ts-node src/index.ts",
+  "lint": "eslint src",
+  "format": "prettier --write src"
+}
+```
